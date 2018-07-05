@@ -4,8 +4,9 @@ const HTMLWebpackPlugin = require('html-webpack-plugin');
 const uglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const OpenBrowserPlugin = require('open-browser-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-const config={
+const config = {
     entry : './src/js/index.js',
     devServer : {
         contentBase:path.join(__dirname,'dist'),
@@ -24,16 +25,6 @@ const config={
                 use:['babel-loader']
             },
             {
-                test:/\.png/,
-                use:{
-                    loader:'url-loader',
-                    options:{
-                        name:'[name].[ext]?[hash]',
-                        publicPath:'./dist/'
-                    }
-                }
-            },
-            {
                 test:/\.css$/,
                 use:ExtractTextPlugin.extract({
                     fallback:'style-loader',
@@ -48,19 +39,11 @@ const config={
                     },
                     'postcss-loader'
                 ]*/
-            },
-            {
-                test:/\.(ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                loader:'url-loader',
-                options:{
-                    name:'[hash].[ext]',
-                    limit:10000,
-                }
             }
         ]
     },
     plugins:[
-        new uglifyJsPlugin(),
+       // new uglifyJsPlugin(),
         new HTMLWebpackPlugin({
             template:path.resolve(__dirname,'index.html')
         }),
@@ -68,7 +51,8 @@ const config={
         new OpenBrowserPlugin({url : 'http://localhost:7777'}),
         new ExtractTextPlugin({
             filename:'app.css',
-        })
+        }),
+        new CopyWebpackPlugin([{from: './src/img/**', to: './img', flatten: true}])
     ]
 }
 
